@@ -1,0 +1,100 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}
+    Active Listings
+{% endblock %}
+
+{% block body %}        
+        <h2>{{ product.title }}</h2>
+        <br>
+        {% if user.is_authenticated %}
+        {% if bid and not owner %}
+            <h4>You Are The <strong style="color: green;">First</strong> One to Bid!</h4><br>
+        {% else %}
+            <h4>There Are <strong style="color: #007BFF;"><em>{{ count }}</em></strong> Bid(s) So Far.</h4><br>
+        {% endif %}
+        {% if wish and not owner%}
+            <form action="{% url 'auctions:watchlist' %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="product_id" value="{{ product.id }}">
+                <input class="btn btn-primary" type="submit" value="Add To Watchlist">
+            </form>
+        {% elif owner %}
+            <h5>Check Your Listings <a href="{% url 'auctions:show_listing' %}">Here</a>.</h5>
+        {% else %}
+            <h5>Already Added to <a href="{% url 'auctions:watchlist' %}">Watchlist</a>.</h5>
+        {% endif %}
+        {% else %}
+            <h1 style="color: red; text-align: center;">Login to Place Your Bid!</h1>
+            <br>
+        {% endif %}
+        <br>
+        <img src="{{ product.photo }}" alt="Photo" height="60%" width="60%">
+        <br><br>
+        <div>
+            <h6>Initial Bid: ${{ product.price }}</h6><br>
+            <h6>Latest Bid:</h6>
+            {% if bid %}
+                <h2>${{ product.price }}</h2>
+            {% else %}
+                <h2>${{ bid_state.latest_bid }} By <strong style="color: #007BFF;"><em>{{ bid_state.winner }}</em></strong></h2>           
+            {% endif %}
+            <br>
+            <p><h6>{{ product.description }}</h6></p>
+            <br>
+            <h6>Category: {{product.category}}</h6><br>
+            <h3>Listed By: <strong style="color: #007BFF;"><em>{{ product_owner }}</em></strong></h3><br>
+            {% if user.is_authenticated %}
+                {% if done and not owner%}
+                    {% if change %}
+                        <form action="{% url 'auctions:bid' %}" method="POST">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="bid">Price (USD): </label>
+                                <input autofocus class="form-control" type="number" name="bid" placeholder="Bid" max="99999999" min="{{ product.price }}" step="any" required>
+                                <input type="hidden" name="of_product" value="{{product.id}}">
+                            </div>
+                            <input class="btn btn-primary" type="submit" value="Place Bid">
+                        </form>
+                    {% else %}
+                        <form action="{% url 'auctions:bid' %}" method="POST">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="bid">Price (USD): </label>
+                                <input autofocus class="form-control" type="number" name="bid" placeholder="Bid" max="99999999" min="{{ bid_state.latest_bid }}" step="any" required>
+                                <input type="hidden" name="of_product" value="{{product.id}}">
+                            </div>
+                            <input class="btn btn-primary" type="submit" value="Place Bid">
+                        </form>
+                    {% endif %}
+                {% elif owner %}
+                    <h3>You've Listed This Product.</h3>
+                {% else %}
+                    <h5>You Have Already Placed <i style="color: brown;"></i>A Bid!</h5>
+                {% endif %}
+                </div>
+                <br><br>
+                <h6>Add Comments:</h6>
+                <form action="{% url 'auctions:user_comments' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="cproduct" value="{{product.id}}">
+                    <textarea class="form-control" name="comment" cols="5" rows="3" placeholder="Comment" required></textarea><br>
+                    <input class="btn btn-primary" type="submit" value="Comment">
+                </form>
+                <br><br>
+            {% endif %}
+        
+        <h6>Comments:</h6>
+        {% if size %}
+            <div class="container-fluid p-3 my-3 border">
+                {% for comment in comments %}
+                    <p><h6><pre style="font-size: medium;"><strong>{{ comment.comment_user }}</strong> : {{ comment }}                         <em>{{ comment.comment_time | timesince }} ago</em></pre></h6></p>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="container-fluid p-3 my-3 border">
+                <p><h6><pre style="font-size: medium;">Be The First One To Comment!</pre></h6></p>
+            </div>
+        {% endif %}
+
+{% endblock %}

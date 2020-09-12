@@ -1,0 +1,29 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Active Listings</h2>
+
+    {% for product in products %}
+        {% if product.is_active %}
+        <span style="display: inline-block;
+        width: 60%;
+        height: 60%;
+        padding: 5px;
+        border-bottom: 1px double;   ">
+            <a href="{% url 'auctions:product_view' product.id %}"><img src="{{ product.photo }}" alt="{{ product.title }}" height="50%" width="50%"></a>
+        </span>
+        <div style="display: inline-block;
+        width: 30%;
+        height: 30%;
+        padding: 5px;
+        border: 1px solid double;   ">
+            <a href="{% url 'auctions:product_view' product.id %}"><h3>{{ product.title }}</h3></a><br>
+            <h5>Price: ${{ product.price }}</h5>
+            <br>
+            <h8>Added {{ product.post_time | timesince}} ago</h6>
+        </div>
+        <br><br><br>
+        {% endif %}
+    {% endfor %}
+
+{% endblock %}

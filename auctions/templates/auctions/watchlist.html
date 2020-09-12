@@ -1,0 +1,55 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}
+    Watchlist
+{% endblock %}
+
+{% block body %}
+    <h2>Watchlist</h2>
+    <br>
+    {% if first %}
+        <h4><em>{{ product.title }}</em> Has Been <strong><em>Added</em></strong> To Your <a href="{% url 'auctions:watchlist' %}">Watchlist</a>.</h4>
+    {% endif %}
+
+    {% if empty %}
+        <h5>There are {{size}} <i><strong style="color: green;">active</strong></i> product(s) in in your Watchlist.</h5>
+    {% elif not empty and not first %}
+        <h5>There are {{size}} <i><strong style="color: red;">active</strong></i> product(s) in your Watchlist.</h5>
+    {% endif %}
+    {% for all in all_product %}
+        <span style="display: inline-block;
+        width: 60%;
+        height: 60%;
+        padding: 5px;
+        border-bottom: 1px double;   ">
+            <img src="{{ all.product.photo }}" alt="Photo" height="50%" width="50%">
+        </span>
+        <div style="display: inline-block;
+        width: 30%;
+        height: 30%;
+        padding: 5px;
+        border: 1px solid double;   ">
+            {% if all.product.is_active %}
+                <h3>{{ all.product.title }} ✅</h3>
+            {% else %}
+                <h3>{{ all.product.title }} ❌</h3>
+            {% endif %}
+            <br>
+            <h5>Starting Bid: ${{ all.product.price }}</h5>
+            <h5>Your Bid: ${{ bid_details.bid_price }}</h5>
+            <p><h6>{{ all.product.description }}</h6></p>
+            <br>
+            <h8>{{ all.product.post_time }}</h6>
+        </div>
+        <div style="
+        padding: 5px;   ">
+            <form action="{% url 'auctions:remove' %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="rem_product" value="{{all.product.id}}">
+                <input class="btn btn-danger" type="submit" name="remove" value="Remove">
+            </form>
+        </div>
+        <br><br><br>
+    {% endfor %}
+
+{% endblock %}

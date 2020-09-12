@@ -1,0 +1,91 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>{% block title %}Auctions{% endblock %}</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link href="{% static 'auctions/styles.css' %}" rel="stylesheet">
+        <link rel="shortcut icon" href="{% static 'favicon/favicon.ico' %}">
+    </head>
+    <body>
+        <a name="top"></a>
+        <h1 style="color: #007BFF;">Auctions</h1>
+        <div>
+            {% if user.is_authenticated %}
+                Signed in as <strong style="color: green;">{{ user.username }}</strong>.
+            {% else %}
+                Not signed in.
+            {% endif %}
+        </div>
+        
+        <ul class="nav">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'auctions:index' %}">Active Listings</a>
+            </li>
+            {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'auctions:add_listing' %}">Add Listing</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'auctions:show_listing' %}">My Listings</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'auctions:categories' %}">Categories</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'auctions:watchlist' %}">Watchlist</a>
+                </li>
+                {% if user.is_staff %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'admin:index' %}" target="_blank">Admin</a>
+                    </li>
+                {% endif %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'auctions:logout' %}">Log Out</a>
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'auctions:login' %}">Log In</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'auctions:register' %}">Register</a>
+                </li>
+            {% endif %}
+        </ul>
+        <hr>
+        
+        {% block body %}
+        {% endblock %}
+        <a href="#top" style="margin-left: 89%;"><button class="btn btn-primary">Back To Top</button></a>
+    </body>
+    <br><br><br><br>
+    <div style="
+        position: relative;
+        min-height: 15vh;
+    ">
+    <div style="
+        padding-bottom: 2.5rem;    
+    ">
+    <footer style="
+        padding-top: 15px;
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: #007BFF;
+        color: white;
+        text-align: center;
+    ">
+        {% if user.is_authenticated %}
+            <p><b>Author: Abdullah Al Rafi</b></p>
+            <p><b>A Project of CS50’s Web Programming with Python and JavaScript</b></p>
+        {% else %}
+            <p><b>Author: Abdullah Al Rafi</b></p>
+            <p><b><a href="mailto:abdullah34alrafi@gmail.com" style="color: white;">Contact Here</a></b></p>
+            <p><b>A Project of CS50’s Web Programming with Python and JavaScript</b></p>
+        {% endif %}
+    </footer>
+    </div>
+    </div>
+</html>

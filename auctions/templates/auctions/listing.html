@@ -1,0 +1,88 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}
+    Show Listing
+{% endblock %}
+
+{% block body %}
+    {% if won %}
+        <h2 style="color: green;">Winnings</h2>
+        {% for win in winning %}
+        <h4>Product: <i><strong style="color: #007BFF;">{{ win.won_product }}</strong></i> 🎊, Bid: <strong style="color: red;">${{ win.latest_bid }}</strong>🎉 From: <i><strong style="color: #007BFF;">{{ win.won_product.owner }}</strong></i></h3>
+        {% endfor %}
+        <br>
+    {% else %}
+        <h2>Winnigns</h2><br>
+        <h4><i><strong style="color: red;">Nothing</strong></i> To Show</h3><br>
+    {% endif %}
+    {%if found%}
+    <h2 style="color: red;">Status</h2><br>
+        {% for lat in latest %}
+            <h4>Winning Bid For: <i><strong style="color: #007BFF;">{{ lat.won_product }}</strong></i>, is <strong style="color: red;">${{ lat.latest_bid }}</strong> By 🎉 <i><strong style="color: #007BFF;">{{ lat.winner }}</strong></i> 🎊</h3>
+        {% endfor %}
+    {% else %}
+        <h2>Status</h2><br>
+        <h4><i><strong style="color: red;">Nothing</strong></i> To Show</h3>
+    {% endif %}
+    <br>
+    <h2>Show Listings</h2>
+    <br>
+    {% if empty %}
+        <h5>There are <i><strong style="color: red;">{{size}}</strong></i> product(s) that you have listed so far.</h5>
+    {% else %}
+        <h5>There are <i><strong style="color: #007BFF;">{{size}}</strong></i> product(s) that you have listed so far.</h5>
+    {% endif %}
+    <br>
+    {% for product in products %}
+        <span style="display: inline-block;
+        width: 60%;
+        height: 60%;
+        padding: 5px;
+        border-bottom: 1px double;   ">
+            <img src="{{ product.photo }}" alt="Photo" height="90%" width="90%">
+        </span>
+        <span style="display: inline-block;
+        width: 30%;
+        height: 30%;
+        padding: 5px;
+        border: 1px solid double;   ">
+            {% if product.is_active %}
+                <h3>{{ product.title }} ✅</h3>
+            {% else %}
+                <h3>{{ product.title }} <strong>(SOLD)</strong></h3>
+            {% endif %}<br>
+            <br>
+            <h5>Starting Bid: ${{ product.price }}</h5>
+            <p><h6>{{ product.description }}</h6></p>
+            <br>
+            <h8>{{ product.post_time }}</h6>
+        </span>
+        <div style="border: 1px;">
+            <div style="
+                padding: 5px;
+                margin-left: 15%;
+                float: left;">
+                {% if product.is_active %}
+                <form action="{% url 'auctions:rem' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="rem_product" value="{{product.id}}">
+                    <input class="btn btn-danger" type="submit" name="remove" value="Remove">
+                </form>
+                <br>
+            </div>
+            <div style="
+                margin-left: 5%;
+                padding: 5px;
+                float: left;">
+                <form action="{% url 'auctions:sold' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="sold_product" value="{{product.id}}">
+                    <input type="hidden" name="sold_value" value="False">
+                    <input class="btn btn-success" type="submit" name="sold" value="Sold">
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        <br><br><br>
+    {% endfor %}
+{% endblock %}

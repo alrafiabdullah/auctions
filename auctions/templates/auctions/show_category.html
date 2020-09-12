@@ -1,0 +1,36 @@
+{% extends 'auctions/layout.html' %}
+
+{% block title %}
+    {{ category.name }}
+{% endblock %}
+
+{% block body %}
+    <h2>{{category.name}}</h2>
+    <br>
+    {% if amount %}
+        <h5>There are {{size}} <i><strong style="color: red;">active</strong></i> product(s) in this category so far.</h5>
+    {% else %}
+    <h5>There are {{size}} <i><strong style="color: green;">active</strong></i> product(s) in this category so far.</h5>
+    {% endif %}
+    <br>
+    {% for product in products %}
+        <span style="display: inline-block;
+        width: 50%;
+        height: 50%;
+        padding: 5px;
+        border-bottom: 1px double;   ">
+            <a href="{% url 'auctions:product_view' product.id %}"><img src="{{ product.photo }}" alt="{{ product.title }}" height="50%" width="50%"></a>
+        </span>
+        <div style="display: inline-block;
+        width: 40%;
+        height: 40%;
+        padding: 5px;
+        border: 1px solid double;   ">
+            <a href="{% url 'auctions:product_view' product.id %}"><h3>{{ product.title }}</h3></a><br>
+            <h5>Price: ${{ product.price }}</h5>
+            <br>
+            <h8>{{ product.post_time }}</h6>
+        </div>
+        <br><br><br>
+    {% endfor %}
+{% endblock %}

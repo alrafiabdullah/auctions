@@ -1,0 +1,46 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}
+    Add Listing
+{% endblock %}
+
+{% block body %}
+    <h2>Add Listings</h2>
+    <br><br>
+    {% if submission %}
+        <h3> <em>"{{title}}"</em> in <em>"{{category}}"</em> Category Has Been Added Successfully! ✅</h3>
+        <br><br>
+        <a href="{% url 'auctions:add_listing' %}"><button class="btn btn-primary">Add Another Product</button></a>
+    {% else %}
+        <form action="{% url 'auctions:add_listing' %}" method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="title">Title: </label>
+                <input autofocus class="form-control" type="text" name="title" placeholder="Product Title" required>
+            </div>
+            <div class="form-group">
+                <label for="category">Category: </label>
+                <select autofocus class="form-control" name="category">
+                    {% for category in categories %}
+                        <option value="{{category}}">{{category}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="description">Description: </label>
+                <textarea class="form-control" name="description" cols="100" rows="7" placeholder="Product Description" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="price">Price (USD): </label>
+                <input autofocus class="form-control" type="number" name="price" placeholder="$1.0" max="99999999" min="1.0" step="any" required>
+            </div>
+            <div class="form-group">
+                <label for="photo">Photo: </label>
+                <input autofocus class="form-control" type="url" name="photo" placeholder="Photo URL(https://xxxx.xx/image.jpg)" required>
+            </div>
+            <br><br>
+            
+            <input class="btn btn-primary" type="submit" value="Add" style="margin-left: 45%; width: 100px">
+        </form>
+    {% endif %}
+{% endblock %}
